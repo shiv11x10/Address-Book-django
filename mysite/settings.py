@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import django_heroku
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,11 +80,20 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
     }
 }
 
+"""
+We are adding this line of code so that our database works locally
+The value of URI changes everyday so we need to go to heroku and copy paste urI here everyday to make it work locally
+If there is any problem on the cloud just remove this line and push the code again and it will work on cloud.
+"""
+DATABASES['default'] = dj_database_url.config(default='postgres://xzgekekytywzpt:77edf2e52979bad74454de9b5f926107de590517558fe9893baf1aa6b9b05102@ec2-52-207-124-89.compute-1.amazonaws.com:5432/da5rq943vrteb2')
+
+db_from_env = dj_database_url.config(conn_max_age=600)
+
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
